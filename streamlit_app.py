@@ -46,9 +46,9 @@ CSS = """
 .fv-hero p { margin: 6px 0 0; color: var(--muted); }
 
 /* Tabs */
-.stTabs [data-baseweb="tab-list"] { gap: 8px; justify-content: center; }
-.stTabs [data-baseweb="tab"] { border-radius: 12px; padding: 8px 18px; background: #fff; font-weight: 600; }
-.stTabs [aria-selected="true"] { background: var(--purple-soft); color: var(--purple); }
+div[role="radiogroup"] { gap: 8px; justify-content: center; }
+div[role="radiogroup"] > label { border-radius: 12px; padding: 8px 18px; background: #fff; font-weight: 600; border: 1px solid #e5e7eb; }
+div[role="radiogroup"] > label:has(input:checked) { background: var(--purple-soft); color: var(--purple); border-color: #c4b5fd; }
 
 /* Uploader + camera look like cards */
 [data-testid="stFileUploader"] section, [data-testid="stCameraInput"] {
@@ -143,13 +143,17 @@ st.markdown(
 predictor = get_predictor()
 
 # --- 1. Get an image: camera or gallery/computer -------------------------------------
-tab_cam, tab_up = st.tabs(["📷 צילום", "🖼️ גלריה / מחשב"])
-with tab_cam:
-    cam = st.camera_input("צלמו פרי", label_visibility="collapsed")
-with tab_up:
-    up = st.file_uploader("בחרו תמונה", type=["jpg", "jpeg", "png"], label_visibility="collapsed")
+#
+# The camera widget is rendered ONLY after the user picks "צילום". st.tabs would render both tabs
+# at page load, and the camera widget asks the browser for camera permission as soon as it appears.
+MODE_UPLOAD, MODE_CAMERA = "🖼️ גלריה / מחשב", "📷 צילום"
+mode = st.radio("מקור התמונה", [MODE_UPLOAD, MODE_CAMERA], horizontal=True, label_visibility="collapsed")
+if mode == MODE_CAMERA:
+    st.caption("הדפדפן ישאל עכשיו אם לאפשר גישה למצלמה")
+    source = st.camera_input("צלמו פרי", label_visibility="collapsed")
+else:
+    source = st.file_uploader("בחרו תמונה", type=["jpg", "jpeg", "png"], label_visibility="collapsed")
 
-source = cam or up  # a fresh photo wins; otherwise use the uploaded file
 if source is None:
     st.info("העלו תמונה או צלמו כדי להתחיל 👆")
     st.stop()
