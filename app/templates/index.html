@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#16a34a">
+  <title>Fruit Vision – זיהוי פירות</title>
+  <link rel="stylesheet" href="{{ url_for('static', path='style.css') }}">
+</head>
+<body>
+  <main class="app">
+    <header class="hero">
+      <div class="logo">🍎</div>
+      <h1>Fruit Vision</h1>
+      <p>צלמו תמונה והמערכת שלנו תזהה את הפרי</p>
+    </header>
+
+    <section class="card" id="pick-card">
+      <div class="actions">
+        <!-- capture="environment" opens the phone's rear camera. It works on plain HTTP too,
+             unlike getUserMedia which needs HTTPS. -->
+        <label class="btn btn-primary" for="camera-input">📷 צילום תמונה</label>
+        <input id="camera-input" type="file" accept="image/*" capture="environment" hidden>
+
+        <label class="btn btn-secondary" for="gallery-input">🖼️ בחירה מהגלריה / מהמחשב</label>
+        <input id="gallery-input" type="file" accept="image/jpeg,image/png,image/*" hidden>
+      </div>
+
+      <div class="preview" id="preview" hidden>
+        <img id="preview-img" alt="תצוגה מקדימה של התמונה">
+      </div>
+
+      <div class="actions" id="action-row" hidden>
+        <button class="btn btn-go" id="identify-btn" type="button">🔍 זהה את הפרי</button>
+        <button class="btn btn-ghost" id="save-btn" type="button">💾 שמור תמונה</button>
+      </div>
+
+      <div class="loader" id="loader" hidden role="status" aria-live="polite">
+        <span class="spinner"></span> מנתח את התמונה…
+      </div>
+
+      <div class="error" id="error" hidden role="alert"></div>
+    </section>
+
+    <section class="card result" id="result" hidden aria-live="polite">
+      <div class="result-top">
+        <div class="result-emoji" id="result-emoji">🍎</div>
+        <div>
+          <div class="result-label" id="result-label">—</div>
+          <div class="result-conf" id="result-conf"></div>
+        </div>
+      </div>
+      <div class="note" id="unknown-note" hidden>
+        רמת הביטחון נמוכה מ-60%, לכן התוצאה מוצגת כ"לא ידוע". נסו תמונה ברורה יותר של פרי אחד.
+      </div>
+      <h2>הסתברות לכל פרי</h2>
+      <ul class="bars" id="bars"></ul>
+    </section>
+
+    <footer>Fruit Vision · CNN · TensorFlow/Keras · FastAPI</footer>
+  </main>
+  <script src="{{ url_for('static', path='script.js') }}"></script>
+</body>
+</html>

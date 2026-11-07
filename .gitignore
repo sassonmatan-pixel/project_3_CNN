@@ -1,0 +1,20 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ipynb_checkpoints/
+
+# Training data (large) - the trained model in models/ IS committed on purpose
+Fruit/
+Fruit.zip
+dataset/
+
+# Secrets / local config
+.env
+.streamlit/secrets.toml
+ngrok.yml
+
+# Local artifacts
+*.zip
+out_v3/
+.ipynb_checkpoints/
