@@ -14,6 +14,12 @@ const els = {
   note: $("unknown-note"), bars: $("bars"),
 };
 
+// On a phone/tablet the gallery button should say "phone", not "computer".
+if (/Android|iPhone|iPad|iPod|Mobi/i.test(navigator.userAgent)) {
+  const galleryLabel = document.querySelector('label[for="gallery-input"]');
+  if (galleryLabel) galleryLabel.textContent = "🖼️ בחירה מהגלריה / מהטלפון";
+}
+
 let currentBlob = null; // the (downscaled) image that will be sent and saved
 
 function showError(msg) { els.error.textContent = msg; els.error.hidden = false; }

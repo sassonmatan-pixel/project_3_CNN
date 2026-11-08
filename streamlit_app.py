@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import hashlib
 import html
+import re
 
 import streamlit as st
 
@@ -34,6 +35,9 @@ CSS = """
 .block-container { max-width: 640px; padding-top: 2rem; padding-bottom: 3rem; }
 #MainMenu, footer, header[data-testid="stHeader"] { visibility: hidden; height: 0; }
 .stApp, .stApp p, .stApp label, .stApp span, .stApp div { font-family: "Segoe UI", system-ui, "Arial Hebrew", Arial, sans-serif; }
+/* The rule above also hit Streamlit's icon elements, so on phones the icon's name ("upload") was drawn as text
+   on top of the button label. Give icons their own font back. */
+[data-testid="stIconMaterial"] { font-family: "Material Symbols Rounded" !important; }
 
 /* Hero */
 .fv-hero { text-align: center; padding: 6px 0 18px; }
@@ -146,7 +150,17 @@ predictor = get_predictor()
 #
 # The camera widget is rendered ONLY after the user picks "צילום". st.tabs would render both tabs
 # at page load, and the camera widget asks the browser for camera permission as soon as it appears.
-MODE_UPLOAD, MODE_CAMERA = "🖼️ גלריה / מחשב", "📷 צילום"
+def is_mobile() -> bool:
+    """True when the page is opened from a phone/tablet (decided from the browser's User-Agent header)."""
+    try:
+        ua = st.context.headers.get("User-Agent", "")
+    except Exception:
+        return False
+    return bool(re.search(r"Android|iPhone|iPad|iPod|Mobile", ua, re.I))
+
+
+MODE_UPLOAD = "🖼️ גלריה / טלפון" if is_mobile() else "🖼️ גלריה / מחשב"
+MODE_CAMERA = "📷 צילום"
 mode = st.radio("מקור התמונה", [MODE_UPLOAD, MODE_CAMERA], horizontal=True, label_visibility="collapsed")
 if mode == MODE_CAMERA:
     st.caption("הדפדפן ישאל עכשיו אם לאפשר גישה למצלמה")
